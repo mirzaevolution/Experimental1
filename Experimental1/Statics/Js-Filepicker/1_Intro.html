@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title></title>
+	<link href="/Content/bootstrap.min.css" rel="stylesheet" />
+	<link href="/Content/bootstrap-theme.min.css" rel="stylesheet" />
+	<link href="../../FrontEnd3rdLibs/Filepicker/fileicons.css" rel="stylesheet" />
+	<link href="../../FrontEnd3rdLibs/Filepicker/filepicker.css" rel="stylesheet" />
+	<script src="../../Scripts/jquery-3.3.1.min.js"></script>
+	<script src="../../Scripts/bootstrap.min.js"></script>
+	<script src="../../FrontEnd3rdLibs/Filepicker/filepicker.js"></script>
+	<script src="../../FrontEnd3rdLibs/Filepicker/filepicker-ui.js"></script>
+	<script src="../../FrontEnd3rdLibs/Filepicker/filepicker-drop.js"></script>
+	<style>
+		.container-top-margin{
+			margin-top:30px;
+		}
+	</style>
+</head>
+<body>
+	<div class="container container-top-margin">
+		<h3>FilePicker.js v2</h3>
+		<br />
+		<div id="filepicker">
+			<!-- The upload button -->
+			<input type="file" name="files[]">
+
+			<!-- The files list -->
+			<ul class="files form-group"></ul>
+		</div>
+	</div>
+	<script>
+		$(document).ready(function () {
+			$("#filepicker").filePicker({
+				url: "/UploadHandler/Submit"
+			}).on("done.filepicker", function (e, data) {
+				console.log("event obj:");
+				console.log(e);
+				console.log("event data:");
+				console.log(data);
+				//var list = $(".files");
+				//$.each(data.files, (idx, file) => {
+				//	if (file.error) {
+				//		list.append("<li class='list-group-item'>" + file.name + " - " + file.error + "</li>");
+				//	} else {
+				//		list.append("<li class='list-group-item'>" + file.name + "</li>");
+				//	}
+
+				//});
+			});
+		});
+	</script>
+</body>
+</html>

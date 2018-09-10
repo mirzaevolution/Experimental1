@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title></title>
+	<link href="/Content/bootstrap.min.css" rel="stylesheet" />
+	<link href="/Content/bootstrap-theme.min.css" rel="stylesheet" />
+	<script src="/Scripts/jquery-3.3.1.min.js"></script>
+	<script src="/Scripts/bootstrap.min.js"></script>
+	<script src="../../FrontEnd3rdLibs/plupload/js/plupload.full.min.js"></script>
+	<style>
+		.container-top-margin {
+			margin-top: 30px;
+		}
+	</style>
+</head>
+<body>
+	<div class="container container-top-margin">
+	
+		<ul id="filelist"></ul>
+		<br />
+
+		<div id="container">
+			<a id="browse" href="javascript:;">[Browse...]</a>
+			<a id="start-upload" href="javascript:;">[Start Upload]</a>
+		</div>
+
+		<br />
+		<pre id="console"></pre>
+	</div>
+	<script type="text/javascript">
+
+		$(document).ready(function () {
+			document.getElementById('start-upload').onclick = function () {
+				uploader.start();
+			};
+
+			var uploader = new plupload.Uploader({
+				browse_button: 'browse', // this can be an id of a DOM element or the DOM element itself
+				url: '/UploadHandler/Submit'
+			});
+
+			uploader.init();
+			uploader.bind('FilesAdded', function (up, files) {
+				var html = '';
+				plupload.each(files, function (file) {
+					html += '<li id="' + file.id + '">' + file.name + ' (' + plupload.formatSize(file.size) + ') <b></b></li>';
+				});
+				document.getElementById('filelist').innerHTML += html;
+			});
+
+			uploader.bind('UploadProgress', function (up, file) {
+				document.getElementById(file.id).getElementsByTagName('b')[0].innerHTML = '<span>' + file.percent + "%</span>";
+			});
+
+			uploader.bind('Error', function (up, err) {
+				document.getElementById('console').innerHTML += "\nError #" + err.code + ": " + err.message;
+			});
+
+			document.getElementById('start-upload').onclick = function () {
+				uploader.start();
+			};
+		})
+	</script>
+</body>
+</html>
