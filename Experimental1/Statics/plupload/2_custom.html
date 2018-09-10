@@ -6,6 +6,7 @@
 	<title>Plupload - Custom example</title>
 
 	<!-- production -->
+	<script src="../../Scripts/jquery-3.3.1.min.js"></script>
 	<script src="../../FrontEnd3rdLibs/plupload/js/plupload.full.min.js"></script>
 
 	<!-- debug
@@ -38,7 +39,6 @@
 		<p style="margin:auto;">Drop files here</p>
 	</div>
 	<pre id="console"></pre>
-	<br />
 	<p id="totalUpload"></p>
 	<br />
 
@@ -49,8 +49,8 @@
 		var queued = 0;
 		var uploader = new plupload.Uploader({
 			runtimes: 'html5,flash,silverlight,html4',
-			browse_button: 'pickfiles', // you can pass an id...
-			container: document.getElementById('container'), // ... or DOM Element itself
+			browse_button: 'dropzone', // you can pass an id...
+			//container: document.getElementById('container'), // ... or DOM Element itself
 			url: '/UploadHandler/Submit',
 			//flash_swf_url : 'Moxie.swf',
 			//silverlight_xap_url : 'Moxie.xap',
@@ -65,47 +65,53 @@
 			},
 			init: {
 				PostInit: function () {
-					document.getElementById('filelist').innerHTML = '';
-
-					document.getElementById('uploadfiles').onclick = function () {
+					$("#filelist").html("");
+					$("#uploadfiles").click(function () {
 						uploader.start();
-						return false;
-					};
-					document.getElementById("clearFiles").onclick = function () {
-						document.getElementById("filelist").innerHTML = "";
-						return false;
-					}
+					});
+					$("#clearFiles").click(function () {
+						$("#filelist").html("");
+					});
 				},
 
 				FilesAdded: function (up, files) {
 					plupload.each(files, function (file) {
 						console.log(file);
-						document.getElementById('filelist').innerHTML += '<div id="' + file.id + '">' + file.name + ' (' + plupload.formatSize(file.size) + ') <b></b></div>';
+						$("#filelist").append('<div id="' + file.id + '">' + file.name + ' (' + plupload.formatSize(file.size) + ') <b></b></div>');
 					});
 					queued = files.length;
 				},
+
 				BeforeUpload: function (up, file) {
-					document.getElementById("totalUpload").innerHTML = "<strong> uploading " + up.total.uploaded + "/" + queued + " file(s)";
+					$("#totalUpload").html("<strong> uploading " + ((queued - up.total.queued) + 1) + "/" + queued + " file(s)");
 
 					up.setOption("multipart_params", {
 						id: file.id
 					});
 					console.log("uploading " + file.name + ".....");
 				},
+
 				UploadProgress: function (up, file) {
-					document.getElementById(file.id).getElementsByTagName('b')[0].innerHTML = '<span>' + file.percent + "%</span>";
+					$("#" + file.id).children("b").first().html('<span>' + file.percent + "%</span>");
 				},
+
 				FileUploaded: function (up, file, response) {
-					document.getElementById("totalUpload").innerHTML = "<strong>" + up.total.uploaded + "/" + queued + " file(s) uploaded</strong>";
+					$("#totalUpload").html("<strong>" + (queued - up.total.queued) + "/" + queued + " file(s) uploaded</strong>");
+					console.log(response);
 
 					if (response.status == 200) {
+						var responseObject = JSON.parse(response.response);
+						var html = $("#" + responseObject.ID).html();
+						var a = "<a href='" + responseObject.PublishedLocation + "' target='_blank'>" + html + "</a>";
+						console.log(a);
+						$("#" + responseObject.ID).html(a);
 						console.log(file.name + " has been uploaded successfully..");
 					} else {
 						console.log(file.name + " failed to upload..");
 					}
 				},
 				Error: function (up, err) {
-					document.getElementById('console').appendChild(document.createTextNode("\nError #" + err.code + ": " + err.message));
+					$("#console").append("<p>Error #" + err.code + ": " + err.message + "</p>");
 				}
 			}
 		});

@@ -316,6 +316,7 @@
     <Content Include="Statics\Js-Filepicker\1_Intro.html" />
     <Content Include="Statics\plupload\1_intro.html" />
     <Content Include="Statics\plupload\2_custom.html" />
+    <Content Include="Statics\plupload\3_ui_widgets.html" />
     <Content Include="Statics\plupload\Moxie.swf" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
