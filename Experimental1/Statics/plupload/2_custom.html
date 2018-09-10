@@ -85,6 +85,8 @@
 					queued = files.length;
 				},
 				BeforeUpload: function (up, file) {
+					document.getElementById("totalUpload").innerHTML = "<strong> uploading " + up.total.uploaded + "/" + queued + " file(s)";
+
 					up.setOption("multipart_params", {
 						id: file.id
 					});
@@ -94,7 +96,8 @@
 					document.getElementById(file.id).getElementsByTagName('b')[0].innerHTML = '<span>' + file.percent + "%</span>";
 				},
 				FileUploaded: function (up, file, response) {
-					document.getElementById("totalUpload").innerHTML = "<strong>" + up.total.uploaded + "/" + queued + " file(s) uploaded";
+					document.getElementById("totalUpload").innerHTML = "<strong>" + up.total.uploaded + "/" + queued + " file(s) uploaded</strong>";
+
 					if (response.status == 200) {
 						console.log(file.name + " has been uploaded successfully..");
 					} else {
