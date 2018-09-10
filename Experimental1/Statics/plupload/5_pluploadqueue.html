@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+	<link href="../../Content/bootstrap.min.css" rel="stylesheet" />
+	<link href="../../Content/bootstrap-theme.min.css" rel="stylesheet" />
+
+	<link href="../../FrontEnd3rdLibs/plupload/js/jquery.plupload.queue/css/jquery.plupload.queue.css" rel="stylesheet" />	<script src="../../Scripts/jquery-3.3.1.min.js"></script>
+	<script src="../../Scripts/bootstrap.min.js"></script>
+	<script src="../../FrontEnd3rdLibs/plupload/js/plupload.full.min.js"></script>
+	<script src="../../FrontEnd3rdLibs/plupload/js/jquery.plupload.queue/jquery.plupload.queue.min.js"></script>
+</head>
+<body>
+	<div class="container">
+		<div id="uploader">
+			<p>Your browser doesn't have Flash, Silverlight or HTML5 support.</p>
+		</div>
+
+		<script type="text/javascript">
+			// Initialize the widget when the DOM is ready
+			$(function () {
+				    // Setup html5 version
+				    $("#uploader").pluploadQueue({
+					        // General settings
+					        runtimes: 'html5,flash,silverlight,html4',
+							url: '/UploadHandler/Submit',
+
+					        chunk_size: '1mb',
+					        rename: true,
+					        dragdrop: true,
+
+					        filters: {
+						            // Maximum file size
+						            max_file_size: '10mb',
+						            // Specify what files to browse for
+						            mime_types: [
+							                { title: "Image files", extensions: "jpg,gif,png" },
+							                { title: "Zip files", extensions: "zip" }
+						            ]
+					        },
+
+					        // Resize images on clientside if we can
+					        resize: {
+						            width: 200,
+						            height: 200,
+						            quality: 90,
+						            crop: true // crop to exact dimensions
+					        }	
+				    });
+			});
+		</script>
+	</div>
+</body>
+</html>

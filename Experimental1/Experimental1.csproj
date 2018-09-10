@@ -311,12 +311,15 @@
     <Content Include="Scripts\jquery-3.3.1.slim.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\pluploader-custom\kmiUploader.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Statics\Js-Filepicker\1_Intro.html" />
     <Content Include="Statics\plupload\1_intro.html" />
     <Content Include="Statics\plupload\2_custom.html" />
     <Content Include="Statics\plupload\3_ui_widgets.html" />
+    <Content Include="Statics\plupload\4_custom_with_kmiUploader.html" />
+    <Content Include="Statics\plupload\5_pluploadqueue.html" />
     <Content Include="Statics\plupload\Moxie.swf" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">

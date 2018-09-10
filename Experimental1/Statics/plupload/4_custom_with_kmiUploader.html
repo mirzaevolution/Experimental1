@@ -1,0 +1,197 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr">
+<head>
+	<meta name="viewport" content="width=device-width" />
+	<title>Plupload - Custom example</title>
+
+	<link href="../../Content/bootstrap.min.css" rel="stylesheet" />
+	<link href="../../Content/bootstrap-theme.min.css" rel="stylesheet" />
+	<script src="../../Scripts/jquery-3.3.1.min.js"></script>
+	<script src="../../Scripts/bootstrap.min.js"></script>
+	<script src="../../FrontEnd3rdLibs/plupload/js/plupload.full.min.js"></script>
+	<script src="../../Scripts/pluploader-custom/kmiUploader.js"></script>
+	<style>
+		#dropzone {
+			height: 100px;
+			width: 200px;
+			border: 2px dotted royalblue;
+		}
+		#dropzone{
+			border:2px dotted royalblue;
+			cursor:pointer;
+		}
+		#dropzone-caption{
+			margin:15px 30px;
+		}
+		#console{
+			width:700px;
+			padding:10px;
+			background-color:black;
+			color:lime;
+			height:200px;
+			overflow:scroll;
+			margin:10px 0px;
+		}
+	</style>
+</head>
+<body style="font: 13px Verdana; background: #eee; color: #333">
+
+	<div class="container">
+		<h2>kmiUploader.js</h2>
+
+
+		<div id="dropzone">
+			<p id="dropzone-caption" class="lead">Drop files here <span class="glyphicon glyphicon-upload"></span></p>
+		</div>
+		<br /><br />
+
+		<div>
+			<!--<a id="pickfiles" href="javascript:;">[Select files]</a>-->
+			<a id="uploadfiles" href="#" class="btn btn-primary">Upload files <span class="glyphicon glyphicon-upload"></span></a>
+			<a id="clearFiles" href="#" class="btn btn-danger">Clear <span class="glyphicon glyphicon-remove"></span></a>
+		</div>
+		<pre id="console"></pre>
+		<p id="totalUpload"></p>
+		<br />
+
+		<div id="filelist">Your browser doesn't have Flash, Silverlight or HTML5 support.</div>
+
+	</div>
+	
+	<script type="text/javascript">
+		// Custom example logic
+		var queued = 0;
+
+		var uploader = $("#dropzone").kmiUploader({
+			url: '/UploadHandler/Submit',
+			maxFileSize: '2mb',
+			dropzone: 'dropzone',
+			events: {
+				onPostInit: function () {
+					$("#filelist").html("");
+					$("#uploadfiles").click(function () {
+						uploader.start();
+					});
+					$("#clearFiles").click(function () {
+						$("#filelist").html("");
+						$("#console").html("");
+						uploader.removeFiles();
+					});
+				},
+				onFilesAdded: function (up, files) {
+					plupload.each(files, function (file) {
+						console.log(file);
+						$("#filelist").append('<div id="' + file.id + '">' + file.name + ' (' + plupload.formatSize(file.size) + ') <b></b></div>');
+					});
+					queued = files.length;
+				},
+
+				onBeforeUpload: function (up, file) {
+					$("#totalUpload").html("<strong> uploading " + ((queued - uploader.getInfo().queued) + 1) + "/" + queued + " file(s)");
+					
+					uploader.setOption("params", {
+						id: file.id
+					});
+					$("#console").append("<p># Uploading " + file.name + "</p>");
+					console.log("uploading " + file.name + ".....");
+				},
+
+				onUploadProgress: function (up, file) {
+					$("#" + file.id).children("b").first().html('<span>' + file.percent + "%</span>");
+				},
+
+				onFileUploaded: function (up, file, response) {
+					$("#totalUpload").html("<strong>" + (queued - uploader.getInfo().queued) + "/" + queued + " file(s) uploaded</strong>");
+					
+					if (response.status == 200) {
+						var responseObject = JSON.parse(response.response);
+						var html = $("#" + responseObject.ID).html();
+						var a = "<a href='" + responseObject.PublishedLocation + "' target='_blank'>" + html + "</a>";
+						$("#" + responseObject.ID).html(a);
+						$("#console").append("<p># " + file.name + " has been uploaded successfully</p>");
+						console.log(file.name + " has been uploaded successfully..");
+					} else {
+						$("#console").append("<p># " + file.name + " failed to upload..</p>");
+						console.log(file.name + " failed to upload..");
+					}
+				},
+				onError: function (up, err) {
+					$("#console").append("<p># Error [" + err.code + "] : " + err.message + "</p>");
+				}
+			}
+		});
+
+		//var uploader = new plupload.Uploader({
+		//	runtimes: 'html5,flash,silverlight,html4',
+		//	browse_button: 'dropzone', // you can pass an id...
+		//	//container: document.getElementById('container'), // ... or DOM Element itself
+		//	url: '/UploadHandler/Submit',
+		//	//flash_swf_url : 'Moxie.swf',
+		//	//silverlight_xap_url : 'Moxie.xap',
+		//	drop_element: 'dropzone',
+		//	filters: {
+		//		max_file_size: '10mb'
+		//		, mime_types: [
+		//			{ title: "Image files", extensions: "jpg,gif,png" },
+		//			{ title: "Zip files", extensions: "zip" }
+		//		]
+		//		, prevent_duplicates: true
+		//	},
+		//	init: {
+		//		PostInit: function () {
+		//			$("#filelist").html("");
+		//			$("#uploadfiles").click(function () {
+		//				uploader.start();
+		//			});
+		//			$("#clearFiles").click(function () {
+		//				$("#filelist").html("");
+		//			});
+		//		},
+
+		//		FilesAdded: function (up, files) {
+		//			plupload.each(files, function (file) {
+		//				console.log(file);
+		//				$("#filelist").append('<div id="' + file.id + '">' + file.name + ' (' + plupload.formatSize(file.size) + ') <b></b></div>');
+		//			});
+		//			queued = files.length;
+		//		},
+
+		//		BeforeUpload: function (up, file) {
+		//			$("#totalUpload").html("<strong> uploading " + ((queued - up.total.queued) + 1) + "/" + queued + " file(s)");
+
+		//			up.setOption("multipart_params", {
+		//				id: file.id
+		//			});
+		//			console.log("uploading " + file.name + ".....");
+		//		},
+
+		//		UploadProgress: function (up, file) {
+		//			$("#" + file.id).children("b").first().html('<span>' + file.percent + "%</span>");
+		//		},
+
+		//		FileUploaded: function (up, file, response) {
+		//			$("#totalUpload").html("<strong>" + (queued - up.total.queued) + "/" + queued + " file(s) uploaded</strong>");
+		//			console.log(response);
+
+		//			if (response.status == 200) {
+		//				var responseObject = JSON.parse(response.response);
+		//				var html = $("#" + responseObject.ID).html();
+		//				var a = "<a href='" + responseObject.PublishedLocation + "' target='_blank'>" + html + "</a>";
+		//				console.log(a);
+		//				$("#" + responseObject.ID).html(a);
+		//				console.log(file.name + " has been uploaded successfully..");
+		//			} else {
+		//				console.log(file.name + " failed to upload..");
+		//			}
+		//		},
+		//		Error: function (up, err) {
+		//			$("#console").append("<p>Error #" + err.code + ": " + err.message + "</p>");
+		//		}
+		//	}
+		//});
+
+		//uploader.init();
+
+	</script>
+</body>
+</html>
