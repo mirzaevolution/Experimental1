@@ -1,0 +1,469 @@
+﻿
+@{
+    ViewBag.Title = "KmiUploader Help Page";
+}
+<style>
+	.jumbotron{
+		background-color:#05c61e;
+		color:white;
+	}
+	.codePreview{
+		font-family:'Lucida Console';
+		background-color:black;
+		color:lime;
+	}
+</style>
+<h2>KmiUploader Help Page</h2>
+<br />
+<br />
+<div class="jumbotron">
+	<h2 class="text-center">
+		KmiUploader.js
+	</h2>
+</div>
+<br />
+<div id="preview">
+	<h3>Default Init</h3>
+	<pre class="codePreview">
+		<code>
+			$.fn.kmiUploader.defaults = {
+				url: '',		// required
+				dropzone: undefined,	// required
+				allowedExtensions: [],
+				maxFileSize: 0,
+				isSameFileNameAllowed: false,
+				headers: undefined,
+				params: undefined,
+				isMultiple: true,
+
+				events: {
+				onPostInit: function (obj) { },
+				onQueueChanged: function (obj) { },
+				onFilesAdded: function (obj, files) { },
+				onFilesRemoved: function (obj, files) { },
+				onBeforeUpload: function (obj, file) { },
+				onUploadFile: function (obj, file) { },
+				onUploadProgress: function (obj, file) { },
+				onFileUploaded: function (obj, file, result) { },
+				onUploadComplete: function (obj, files) { },
+				onError: function (obj, error) { },
+				onDestroy: function (obj) { }
+				}
+			}
+		</code>
+	</pre>
+</div>
+<br />
+<div id="properties">
+	<h3>Properties</h3>
+	<ul class="list-group">
+		<li class="list-group-item list-group-item-info">
+			<div>
+				<p class="lead"><strong>url</strong></p>
+				<p><strong>Type:</strong> string</p>
+				<p><strong>Default Value:</strong> empty string</p>
+				<p><strong>Description:</strong> Url of the server-side upload handler that will accept the files.</p>
+			</div>
+		</li>
+		<li class="list-group-item list-group-item-info">
+			<div>
+				<p class="lead"><strong>dropzone</strong></p>
+				<p><strong>Type:</strong> string</p>
+				<p><strong>Default Value:</strong> empty string</p>
+				<p><strong>Description:</strong> A file dialog or dropzone or both. You must pass an id of the targeted dropzone.</p>
+			</div>
+		</li>
+		<li class="list-group-item list-group-item-info">
+			<div>
+				<p class="lead"><strong>allowedExtensions</strong></p>
+				<p><strong>Type:</strong> array of objects</p>
+				<p><strong>Default Value:</strong> empty array / []</p>
+				<p><strong>Description:</strong> A validation mechanism to pick up files based on the filtered list.</p>
+				<p><strong>Sample:</strong> 
+				<pre class="codePreview"><code>
+{
+  ..,
+  allowedExtensions: [{ title:'Image Files', extensions: "jpg,png,gif" }, { title:'Text File', extensions:"txt" }]
+  ...
+}
+				</code></pre></p>
+			</div>
+		</li>
+		<li class="list-group-item list-group-item-info">
+			<div>
+				<p class="lead"><strong>maxFileSize</strong></p>
+				<p><strong>Type:</strong> string</p>
+				<p><strong>Default Value:</strong> 0</p>
+				<p><strong>Description:</strong> A validation that determines max file size that can be picked up.</p>
+				<p><strong>Sample:</strong>
+<pre class="codePreview">
+<code>
+{
+   ..,
+   maxFileSize:'2mb',
+   ...
+}
+</code>
+</pre>
+				</p>
+			</div>
+		</li>
+		<li class="list-group-item list-group-item-info">
+			<div>
+				<p class="lead"><strong>isSameFileNameAllowed</strong></p>
+				<p><strong>Type:</strong> boolean</p>
+				<p><strong>Default Value:</strong> false</p>
+				<p><strong>Description:</strong> If sets to false, file with same name with other won't be added and error event will be triggered.</p>
+			</div>
+		</li>
+		<li class="list-group-item list-group-item-info">
+			<div>
+				<p class="lead"><strong>headers</strong></p>
+				<p><strong>Type:</strong> object</p>
+				<p><strong>Default Value:</strong> undefined</p>
+				<p><strong>Description:</strong> A way to pass custom HTTP headers with each upload request. The option is simple set of key/value pairs of header names and their values.</p>
+				<p>
+					<strong>Sample:</strong>
+<pre class="codePreview">
+<code>
+{
+   ..,
+   headers: { name:'Mirza' },
+   ...
+}
+</code>
+</pre>
+				</p>
+			</div>
+		</li>
+		<li class="list-group-item list-group-item-info">
+			<div>
+				<p class="lead"><strong>params</strong></p>
+				<p><strong>Type:</strong> object</p>
+				<p><strong>Default Value:</strong> undefined</p>
+				<p><strong>Description:</strong> Additional parameters to be passed to server.</p>
+				<p>
+					<strong>Sample:</strong>
+<pre class="codePreview">
+<code>
+{
+   ..,
+   params: { id:12, date:'2018-10-10' },
+   ...
+}
+</code>
+</pre>
+				</p>
+			</div>
+		</li>
+		<li class="list-group-item list-group-item-info">
+			<div>
+				<p class="lead"><strong>isMultiple</strong></p>
+				<p><strong>Type:</strong> boolean</p>
+				<p><strong>Default Value:</strong> true</p>
+				<p><strong>Description:</strong> A flag that determines whether or not multiple selection is allowed.</p>
+			</div>
+		</li>
+	</ul>
+</div>
+<br />
+<div id="events">
+	<h3>Events</h3>
+	<ul class="list-group">
+		<li class="list-group-item list-group-item-success">
+			<div>
+				<p class="lead"><strong>onPostInit</strong></p>
+				<p><strong>Parameters: </strong></p>
+				<ul class="list-group">
+					<li class="list-group-item"><strong>obj:</strong> The uploader instance</li>
+				</ul>
+				<p><strong>Description:</strong> Fires after the init event incase you need to perform actions there.</p>
+			</div>
+		</li>
+		<li class="list-group-item list-group-item-success">
+			<div>
+				<p class="lead"><strong>onQueueChanged</strong></p>
+				<p><strong>Parameters: </strong></p>
+				<ul class="list-group">
+					<li class="list-group-item"><strong>obj:</strong> The uploader instance</li>
+				</ul>
+				<p><strong>Description:</strong> Fires when the file queue is changed. In other words when files are added/removed to the files array of the uploader instance.</p>
+			</div>
+		</li>
+		<li class="list-group-item list-group-item-success">
+			<div>
+				<p class="lead"><strong>onFilesAdded</strong></p>
+				<p><strong>Parameters:</strong></p>
+				<ul class="list-group">
+					<li class="list-group-item"><strong>obj:</strong> The uploader instance</li>
+					<li class="list-group-item"><strong>files:</strong> Array of file objects that were added to queue by the user.</li>
+				</ul>
+				<p><strong>Description:</strong> Fires after files were filtered and added to the queue.</p>
+			</div>
+		</li>
+		<li class="list-group-item list-group-item-success">
+			<div>
+				<p class="lead"><strong>onFilesRemoved</strong></p>
+				<p><strong>Parameters:</strong></p>
+				<ul class="list-group">
+					<li class="list-group-item"><strong>obj:</strong> The uploader instance</li>
+					<li class="list-group-item"><strong>files:</strong> Array of file objects that were added to queue by the user.</li>
+				</ul>
+				<p><strong>Description:</strong> Fires when file is removed from the queue.</p>
+			</div>
+		</li>
+		<li class="list-group-item list-group-item-success">
+			<div>
+				<p class="lead"><strong>onBeforeUpload</strong></p>
+				<p><strong>Parameters:</strong></p>
+				<ul class="list-group">
+					<li class="list-group-item"><strong>obj:</strong> The uploader instance</li>
+					<li class="list-group-item"><strong>file:</strong> File to be uploaded.</li>
+				</ul>
+				<p><strong>Description:</strong> Fires just before a file is uploaded.</p>
+			</div>
+		</li>
+		<li class="list-group-item list-group-item-success">
+			<div>
+				<p class="lead"><strong>onUploadFile</strong></p>
+				<p><strong>Parameters:</strong></p>
+				<ul class="list-group">
+					<li class="list-group-item"><strong>obj:</strong> The uploader instance</li>
+					<li class="list-group-item"><strong>file:</strong> File to be uploaded.</li>
+				</ul>
+				<p><strong>Description:</strong> Fires when a file is to be uploaded by the runtime.</p>
+			</div>
+		</li>
+		<li class="list-group-item list-group-item-success">
+			<div>
+				<p class="lead"><strong>onUploadProgress</strong></p>
+				<p><strong>Parameters:</strong></p>
+				<ul class="list-group">
+					<li class="list-group-item"><strong>obj:</strong> The uploader instance</li>
+					<li class="list-group-item"><strong>file:</strong> File that is currently being uploaded.</li>
+				</ul>
+				<p>
+					<strong>Description:</strong> Fires while a file is being uploaded. Use this event to update the current file upload progress.
+				</p>
+			</div>
+		</li>
+		<li class="list-group-item list-group-item-success">
+			<div>
+				<p class="lead"><strong>onFileUploaded</strong></p>
+				<p><strong>Parameters:</strong></p>
+				<ul class="list-group">
+					<li class="list-group-item"><strong>obj:</strong> The uploader instance</li>
+					<li class="list-group-item"><strong>file:</strong> File that was uploaded.</li>
+					<li class="list-group-item">
+						<strong>result:</strong> Object with response properties.
+						<ul class="list-group">
+							<li class="list-group-item">
+								<p><strong>response (string)</strong></p>
+								<p><strong>Description:</strong> The response body sent by the server.</p>
+							</li>
+							<li class="list-group-item">
+								<p><strong>status (number)</strong></p>
+								<p><strong>Description:</strong> The HTTP status code sent by the server.</p>
+							</li>
+							<li class="list-group-item">
+								<p><strong>responseHeaders (string)</strong></p>
+								<p><strong>Description</strong> All the response headers as a single string.</p>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<p><strong>Description:</strong> Fires when a file is successfully uploaded.</p>
+			</div>
+		</li>
+		<li class="list-group-item list-group-item-success">
+			<div>
+				<p class="lead"><strong>onUploadComplete</strong></p>
+				<p><strong>Parameters:</strong></p>
+				<ul class="list-group">
+					<li class="list-group-item"><strong>obj:</strong> The uploader instance</li>
+					<li class="list-group-item"><strong>files:</strong> Array of file objects that were added to queue by the user.</li>
+				</ul>
+				<p>
+					<strong>Description:</strong> Fires when all files in a queue are uploaded.
+				</p>
+			</div>
+		</li>
+		<li class="list-group-item list-group-item-success">
+			<div>
+				<p class="lead"><strong>onError</strong></p>
+				<p><strong>Parameters:</strong></p>
+				<ul class="list-group">
+					<li class="list-group-item"><strong>obj:</strong> The uploader instance</li>
+					<li class="list-group-item"><strong>error:</strong> Contains code, message and sometimes file and other details.
+						<ul class="list-group">
+							<li class="list-group-item">
+								<p><strong>code (number)</strong></p>
+								<p><strong>Description:</strong> The plupload error code.</p>
+							</li>
+							<li class="list-group-item">
+								<p><strong>message (string)</strong></p>
+								<p><strong>Description:</strong> Description of the error.</p>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<p>
+					<strong>Description:</strong> Fires when all files in a queue are uploaded.
+				</p>
+			</div>
+		</li>
+		<li class="list-group-item list-group-item-success">
+			<div>
+				<p class="lead"><strong>onDestroy</strong></p>
+				<p><strong>Parameters:</strong></p>
+				<p><strong>Parameters:</strong></p>
+				<ul class="list-group">
+					<li class="list-group-item"><strong>obj:</strong> The uploader instance.</li>
+				</ul>
+				<p><strong>Description:</strong> Fires when destroy method is called.</p>
+			</div>
+		</li>
+	</ul>
+</div>
+<div id="methods">
+	<h3>Methods</h3>
+	<ul class="list-group">
+		<li class="list-group-item list-group-item-warning">
+			<div>
+				<p class="lead"><strong>getFiles()</strong></p>
+				<p><strong>Return Value:</strong> Array of files.</p>
+				<p><strong>Description:</strong> Gets list of currently added/selected files.</p>
+				<p>
+					<strong>Sample:</strong>
+<pre class="codePreview">
+<code>
+   var uploader = $("#dropzone").kmiUploader(...); //Initializes kmiUploader with options
+   $("#buttonGetFiles").click(function(){
+        var files = uploader.getFiles(); //Gets list of files
+        console.log(files);
+   });
+   
+</code>
+</pre>
+				</p>
+			</div>
+		</li>
+		<li class="list-group-item list-group-item-warning">
+			<div>
+				<p class="lead"><strong>getFile(..)</strong></p>
+				<p><strong>Parameter: </strong></p>
+				<ul class="list-group">
+					<li class="list-group-item">
+						<p><strong>id:</strong> The file auto generated unique id</p>
+					</li>
+				</ul>
+				<p><strong>Return Value:</strong> A file that matches the id.</p>
+				<p><strong>Description:</strong> Gets a selected/added file based on the id.</p>
+			</div>
+		</li>
+		<li class="list-group-item list-group-item-warning">
+			<div>
+				<p class="lead"><strong>removeFiles()</strong></p>
+				<p><strong>Return Value:</strong> Void.</p>
+				<p><strong>Description: </strong> Removes all selected/added files/.</p>
+			</div>
+		</li>
+		<li class="list-group-item list-group-item-warning">
+			<div>
+				<p class="lead"><strong>removeFile(..)</strong></p>
+				<p><strong>Parameter: </strong></p>
+				<ul class="list-group">
+					<li class="list-group-item">
+						<p><strong>id:</strong> The file auto generated unique id.</p>
+					</li>
+				</ul>
+				<p><strong>Return Value:</strong> Void.</p>
+				<p><strong>Description:</strong> Removes the selected file.</p>
+			</div>
+		</li>
+		<li class="list-group-item list-group-item-warning">
+			<div>
+				<p class="lead"><strong>start()</strong></p>
+				<p><strong>Return Value:</strong> Void.</p>
+				<p><strong>Description:</strong> Starts the upload process.</p>
+			</div>
+		</li>
+		<li class="list-group-item list-group-item-warning">
+			<div>
+				<p class="lead"><strong>stop()</strong></p>
+				<p><strong>Return Value:</strong> Void.</p>
+				<p><strong>Description:</strong> Stops the currently uploading process.</p>
+			</div>
+		</li>
+		<li class="list-group-item list-group-item-warning">
+			<div>
+				<p class="lead"><strong>setOption(.., ..)</strong></p>
+				<p><strong>Parameter: </strong></p>
+				<ul class="list-group">
+					<li class="list-group-item">
+						<p><strong>key:</strong> The property key.</p>
+					</li>
+					<li class="list-group-item">
+						<p><strong>value:</strong> The property value.</p>
+					</li>
+				</ul>
+				<p><strong>Return Value:</strong> Void.</p>
+				<p><strong>Description:</strong> Sets new property value after initialization.</p>
+				<p>
+					<strong>Sample:</strong>
+<pre class="codePreview">
+<code>
+   var uploader = $("#dropzone").kmiUploader(...); //Initializes kmiUploader with options
+   $("#buttonSetParams").click(function(){
+       uploader.setOption("params",{ id:123, name:"Mirza" }); //Sets parameters to be sent to server
+   });
+</code>
+</pre>
+				</p>
+			</div>
+		</li>
+		<li class="list-group-item list-group-item-warning">
+			<div>
+				<p class="lead"><strong>getBaseOption()</strong></p>
+				<p><strong>Return Value:</strong> Object.</p>
+				<p><strong>Description:</strong> Gets the value for the the whole configuration.</p>
+			</div>
+		</li>
+		<li class="list-group-item list-group-item-warning">
+			<div>
+				<p class="lead"><strong>getInfo()</strong></p>
+				<p><strong>Return Value:</strong> Object.</p>
+				<p><strong>Description:</strong> Gets the information of queued files, uploaded files, failed files, percentage of uploading files, etc.</p>
+			</div>
+		</li>
+	</ul>
+</div>
+<br />
+<div id="usage">
+	<h3>Initialization</h3>
+	<p>Below is snippet of code in how to initialize the kmiUploader and get its instance.</p>
+	<p>
+<pre class="codePreview">
+<code>
+var uploader = $("#dropzone").kmiUploader({
+  url: '/UploadHandler/Submit',
+  maxFileSize: '2mb',
+  dropzone: 'dropzone',
+  events: {
+    onPostInit: function () { },
+    onFilesAdded: function (up, files) { },
+    onBeforeUpload: function (up, file) { },
+    onUploadProgress: function (up, file) { },
+    onFileUploaded: function (up, file, response) { },
+    onError: function (up, err) { }
+  }
+});
+	</code>
+	</pre>
+	</p>
+</div>
+<br />
+<div id="sample">
+	<h3>Sample</h3>
+	<p>The custom sample of this plugin can be viewed <a href="/UploaderBase">here</a></p>
+</div>

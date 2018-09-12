@@ -1,0 +1,185 @@
+﻿
+@{
+	ViewBag.Title = "KmiUploader.js";
+}
+<script src="~/FrontEnd3rdLibs/plupload/js/plupload.full.min.js"></script>
+<script src="~/Scripts/pluploader-custom/kmiUploader.js"></script>
+<style>
+	#dropzone {
+		height: 100px;
+		border: 2px dotted royalblue;
+	}
+
+	#dropzone {
+		border: 2px dotted royalblue;
+		cursor: pointer;
+	}
+
+	#dropzone-caption {
+		text-align: center;
+		margin-top: 40px;
+	}
+
+	#console {
+		padding: 10px;
+		background-color: black;
+		color: lime;
+		height: 200px;
+		overflow: scroll;
+		margin: 10px 0px;
+	}
+</style>
+
+<h3>KmiUploader.js</h3>
+
+<br />
+<div class="row">
+	<div class="col-md-4">
+		<button type="button" id="buttonUpload" class="btn btn-primary">
+			Upload <span class="glyphicon glyphicon-upload"></span>
+		</button>
+		<button type="button" id="buttonClear" class="btn btn-danger">
+			Clear <span class="glyphicon glyphicon-remove"></span>
+		</button>
+
+	</div>
+	<div class="col-md-8">
+		<p id="totalUpload"></p>
+	</div>
+</div>
+<br /><br />
+
+<div class="row">
+	<div class="col-md-5">
+		<div id="dropzone">
+			<p id="dropzone-caption" class="lead">Drop files here <span class="glyphicon glyphicon-upload"></span></p>
+		</div>
+		<br />
+		<pre id="console"></pre>
+	</div>
+	<div class="col-md-7 table-responsive">
+		<table class="table table-condensed table-striped">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Size</th>
+					<th>Extension</th>
+					<th>%</th>
+				</tr>
+			</thead>
+			<tbody id="tbodyInfo"></tbody>
+		</table>
+	</div>
+	
+</div>
+<script>
+	$(document).ready(function () {
+		var id = "23ab123e22290d1a9dff";
+		try {
+			var arr = window.location.search.replace("?", "")
+				.split("&");
+			var d = arr.filter((x) => x.split("=")[0].toLowerCase() == "uid");
+			if (d.length != 0)
+				id = d[0].split("=")[1];
+
+		} catch (err) {
+			id = "23ab123e22290d1a9dff"
+		}
+		console.log(id)
+
+
+		// Load data from back end
+
+		$.ajax({
+			url: '/api/KmiUploader/GetData/' + id,
+			success: function (response) {
+				$.each(response, function (index, value) {
+					$("#tbodyInfo").append("<tr><td><a href='" + value.PublishedLocation + "' target='_blank'>" + value.FileName + "</a></td>" +
+						"<td>" + value.Size + "</td>" +
+						"<td>" + value.Extension + "</td>" +
+						"<td><b class='percentage'></b></td><tr>");
+				});
+			},
+			error: function () {
+				alert("Error loading data from server");
+			}
+		})
+
+
+
+		// Custom example logic
+
+		var queued = 0;
+		var uploader = $("#dropzone").kmiUploader({
+			url: '/api/KmiUploader/Upload/' + id,
+			maxFileSize: '2mb',
+			dropzone: 'dropzone',
+			headers: { name: "mirza" },
+			allowedExtensions: [
+				{
+					title: "Image Files", extensions: "jpg,png"
+				},
+				{
+					title: "Text File", extensions: "txt"
+				}
+			],
+			events: {
+				onPostInit: function () {
+					$("#buttonUpload").click(function () {
+						uploader.start();
+					});
+					$("#buttonClear").click(function () {
+						$("#tbodyInfo").html("");
+						$("#console").html("");
+						uploader.removeFiles();
+					});
+				},
+				onFilesAdded: function (up, files) {
+					var regex = /\.\w+/gi;
+
+					plupload.each(files, function (file) {
+						console.log(file);
+						$("#tbodyInfo").append('<tr id="' + file.id + '"><td class="filename">' + file.name + '</td><td>' +
+							file.size + '</td><td>' +
+							(file.name.match(regex).length > 0 ? file.name.match(regex)[0] : "") +
+							'</td><td><b class="percentage"></b></td></tr>');
+					});
+					queued = files.length;
+				},
+
+				onBeforeUpload: function (up, file) {
+					$("#totalUpload").html("<strong> uploading " + ((queued - uploader.getInfo().queued) + 1) + "/" + queued + " file(s)");
+
+					uploader.setOption("params", {
+						id: file.id
+					});
+					$("#console").append("<p># Uploading " + file.name + "</p>");
+					console.log("uploading " + file.name + ".....");
+				},
+
+				onUploadProgress: function (up, file) {
+					$("#" + file.id + " .percentage").text(file.percent + "%");
+				},
+
+				onFileUploaded: function (up, file, response) {
+					$("#totalUpload").html("<strong>" + (queued - uploader.getInfo().queued) + "/" + queued + " file(s) uploaded</strong>");
+
+					if (response.status == 200) {
+						var responseObject = JSON.parse(response.response);
+						var text = $("#" + responseObject.ID + " .filename").text();
+						var a = "<a href='" + responseObject.PublishedLocation + "' target='_blank'>" + text + "</a>";
+						$("#" + responseObject.ID + " .filename").html(a);
+						$("#console").append("<p># " + file.name + " has been uploaded successfully</p>");
+						console.log(file.name + " has been uploaded successfully..");
+					} else {
+						$("#console").append("<p># " + file.name + " failed to upload..</p>");
+						console.log(file.name + " failed to upload..");
+					}
+				},
+				onError: function (up, err) {
+					$("#console").append("<p># Error [" + err.code + "] : " + err.message + "</p>");
+				}
+			}
+		});
+	});
+</script>

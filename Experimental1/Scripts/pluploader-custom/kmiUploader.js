@@ -202,14 +202,14 @@ if (!Function.prototype.isFunctionEmpty) {
 
 
     $.fn.kmiUploader.defaults = {
-        url: '',
+        url: '', //required
+        dropzone: undefined, //required
         allowedExtensions: [],
         maxFileSize: 0,
         isSameFileNameAllowed: false,
         headers: undefined,
         isMultipart: true,
         params: undefined,
-        dropzone: undefined,
         isMultiple: true,
         runtimes: 'html5,flash,silverlight,html4',
 
